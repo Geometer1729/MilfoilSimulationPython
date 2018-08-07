@@ -6,7 +6,7 @@ def interpilate(times,sim_):
     matches = [] # will be a list of the closest frames
     for t in times:
         stepTo(sim,t) # advance simulation to t
-        matches.append(sim.current) #append frame coresponding to t
+        matches.append(sim.frame) #append frame coresponding to t
     result = []
     for t,match in zip(times,matches):
         matchTime , matchData = match
@@ -18,10 +18,10 @@ def interpilate(times,sim_):
     return result
 
 def stepTo(sim,t):
-    simT , _ = sim.current
+    simT , _ = sim.frame
     if simT < t:
         try:
              sim.__next__()
-        except ValueError as _:
+        except StopIteration:
             return #stop advancing if the simulation completes
         stepTo(sim,t)

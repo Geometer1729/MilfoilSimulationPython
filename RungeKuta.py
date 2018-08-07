@@ -40,11 +40,11 @@ class Simulate:
         self.maxStep = h
         self.tSystem = tSystem
         self.tolerance = tolerance
-        self.current = frame
+        self.frame = frame
     def __iter__(self):
         return self
     def __next__(self):
-        self.current = smartRK4Step(self.tolerance,self.maxStep,self.tSystem,self.current)
+        self.frame = smartRK4Step(self.tolerance,self.maxStep,self.tSystem,self.frame)
         return self
 
 timeCon = lambda stopTime: lambda frame: frame[0] > stopTime #creates a stop condition for a given stop time

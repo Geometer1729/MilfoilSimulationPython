@@ -1,40 +1,41 @@
-
+import RungeKuta as rk4
 
 class Chain:
     def __init__(self,frame,sims):
-        (sim , con), *future = sims
-        self.sim = sim
-        self.con = con
-        self.future = future
-        self.current = frame
+        sim , *self.future = sims
+        self.sim = sim(frame)
+        self.frame = frame
     def __iter__(self):
         return self
     def __next__(self):
-        if (self.con(self.current)):
-            if(len(self.future)==0):
-                raise ValueError("Chain End")
-            (newSim , newCon) , *newFuture = self.future
-            self.sim = newSim
-            self.con = newCon
-            self.future = newFuture
-        self.current = self.sim(self.current).__next__().current
+        try:
+            self.sim.__next__()
+            self.frame=self.sim.frame
+        except StopIteration:
+            if len(self.future) == 0:
+                raise StopIteration
+            sim , *self.future = self.future
+            self.sim = sim(self.frame)
+            self.__next__() # reatempt step in new system
         return self
 
 
+class Condition:
+    def __init__(self,sim,con,frame):
+        self.sim = sim
+        self.con = con
+        self.frame = frame
+    def __iter__(self):
+        return self
+    def __next__(self):
+        if (self.con(self.frame)):
+            raise StopIteration
+        self.frame = self.sim(self.frame).__next__().frame
+        return self
 
+def prepCon(sim,con):
+    return lambda frame : Condition(sim,con,frame)
 
-def runTill(frame,sim_,condition):
-    sim = sim_(frame)
-    frames = []
-    while (not condition(sim.curent)):
-        frames.append(sim.curent)
-        sim = sim.__next__()
-    return (sim.curent , frames)
-
-
-def chainSims(start,sims):
-    frame = start
-    for sim,condition in sims:
-        frame , data = runTill(frame,sim,condition)
-        allData.append(data)
-    return (frame,data)
+def buildODEPhase(maxStep,tolerance,system,con):
+    prep = rk4.prepSim(0.01,0.01,system)
+    return lambda frame: Condition(prep,con,frame)
