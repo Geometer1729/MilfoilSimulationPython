@@ -8,11 +8,11 @@ tau = 2*np.pi
 
 testFrame = (0,[(1,0),(0,1)])
 testSystem1 = lambda t,x : [-1*x[1],x[0]] # simple circular orbit
-testSystem2 = lambda t,xs : [-t*x for x in xs] # acelerating "exponential" decay
-testPrep1 = rk4.prepSim(0.01,0.01,testSystem1)
+testSystem2 = lambda t,xs : [-t*x for x in xs] # acelerating "nearly exponential" decay
+testPrep1 = rk4.prepSim(0.01,0.01,testSystem1) # set up simulation simulation with all but frame
 testPrep2 = rk4.prepSim(0.01,0.01,testSystem2)
 #testSim = testPrep(testFrame)
-testTimes = np.arange(0,10,0.001) 
+testTimes = np.arange(0,10,0.001)
 testPhase1 = (testPrep1,rk4.timeCon(tau))
 testPhase2 = (testPrep2,rk4.timeCon(10))
 testPhases = [testPhase1,testPhase2]
