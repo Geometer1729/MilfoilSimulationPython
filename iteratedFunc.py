@@ -1,3 +1,4 @@
+from itertools import  cycle
 
 class Iter:
     def __init__(self,func,times,frame):
@@ -13,5 +14,11 @@ class Iter:
         else:
             raise StopIteration
 
-def buildIter(func,times=1):
-    return lambda frame: Iter(func,times,frame)
+def buildIter(duration,func,times=1):
+    frameFunc = lambda frame : appFunc(duration,func,frame)
+    return lambda frame: Iter(frameFunc,times,frame)
+
+def appFunc(duration,func,frame):
+    t, pts = frame
+    vals = [ x for x,_ in pts]
+    return (t+duration,list(zip(func(t,vals),cycle([0]))))
