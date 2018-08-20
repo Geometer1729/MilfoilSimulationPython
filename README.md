@@ -1,2 +1,2 @@
 # MilfoilSimulationPython
-extremely similar to the MilfoilSimulation repository but in python
+Reimplements many featurs of MilfoilSimulation in python
